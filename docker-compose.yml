@@ -1,0 +1,17 @@
+services:
+  credit-score-service:
+    image: wiremock/wiremock:latest
+    ports:
+      - "0.0.0.0:8083:8080"
+    volumes:
+      - ./src/test/resources/wiremock/__files:/home/wiremock/__files
+      - ./src/test/resources/wiremock/mappings:/home/wiremock/mappings
+    entrypoint: ["/docker-entrypoint.sh", "--global-response-templating", "--disable-gzip", "--verbose"]
+  request-credit-service:
+    build:
+      context: ./request-credit-service
+      args:
+        - JAR_FILE=./build/libs/*boot.jar
+    ports:
+      - "0.0.0.0:8082:8082"
+    image: "request-credit-service"

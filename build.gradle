@@ -1,0 +1,49 @@
+plugins {
+    id 'java'
+    id 'com.avast.gradle.docker-compose' version '0.17.12'
+}
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+configurations {
+    all {
+        exclude group: 'commons-logging', module: 'commons-logging'
+    }
+}
+ext {
+    junitVersion = '5.8.1'
+    wiremockVersion = '3.10.0'
+    restAssuredVersion = '5.5.0'
+    ownerConfigVersion = '1.0.12'
+}
+
+dependencies {
+    implementation project(':request-credit-service')
+    testImplementation "org.junit.jupiter:junit-jupiter-api:$junitVersion"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:$junitVersion"
+    testImplementation "org.wiremock:wiremock:$wiremockVersion"
+    testImplementation "io.rest-assured:rest-assured:$restAssuredVersion"
+    implementation group: 'org.aeonbits.owner', name: 'owner', version: ownerConfigVersion
+
+
+}
+
+composeBuild {
+    dependsOn(':request-credit-service:bootJar')
+}
+
+
+test{
+    useJUnitPlatform()
+    dependsOn(composeUp)
+    testLogging {
+        showStandardStreams = true
+        events = ["passed", "failed", "skipped"]
+        exceptionFormat = 'full'
+    }
+}
+

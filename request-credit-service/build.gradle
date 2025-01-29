@@ -1,0 +1,45 @@
+plugins {
+    id 'java'
+    id("com.google.osdetector") version "1.7.0"
+    id 'org.springframework.boot' version '3.4.2'
+}
+
+
+group 'org.example'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.1'
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-webflux
+    implementation 'org.springframework.boot:spring-boot-starter-webflux:3.4.1'
+    // https://mvnrepository.com/artifact/org.projectlombok/lombok
+    compileOnly 'org.projectlombok:lombok:1.18.36'
+    annotationProcessor 'org.projectlombok:lombok:1.18.36'
+    if (osdetector.arch == "aarch_64") {
+        // https://mvnrepository.com/artifact/io.netty/netty-all
+        implementation group: 'io.netty', name: 'netty-all', version: '4.1.116.Final'
+
+    }
+}
+bootJar {
+    mainClass = 'org.example.RequestCreditService'
+    archiveClassifier.set( 'boot')
+}
+
+jar {
+    enabled = false
+    archiveClassifier.set("")
+//    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+//    manifest {
+//        attributes(
+//                'Main-Class': 'org.example.RequestCreditService'
+//        )
+//    }
+//    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+}
+

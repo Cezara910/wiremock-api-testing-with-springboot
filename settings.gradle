@@ -1,0 +1,3 @@
+rootProject.name = 'credit-score-wiremock-practice'
+include ':request-credit-service'
+
